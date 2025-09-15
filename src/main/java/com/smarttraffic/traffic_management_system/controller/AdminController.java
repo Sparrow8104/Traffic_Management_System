@@ -2,9 +2,11 @@ package com.smarttraffic.traffic_management_system.controller;
 
 import com.smarttraffic.traffic_management_system.dto.ApiResponse;
 import com.smarttraffic.traffic_management_system.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,6 +20,8 @@ public class AdminController {
     private UserRepository userRepository;
 
     @PutMapping("/approve/{id}")
+    @PreAuthorize("hasRole('ADMIN)")
+    @Transactional
      public ResponseEntity<ApiResponse<Map<String,UUID>>> approveUser(@PathVariable UUID id){
        return userRepository.findById(id)
                 .map(user -> {
@@ -27,6 +31,25 @@ public class AdminController {
                     Map<String,UUID> responseData=Map.of("userId",user.getId());
                     ApiResponse<Map<String,UUID>> response=
                             new ApiResponse<>("success","User approved successfully",responseData);
+                    return ResponseEntity.ok(response);
+                })
+                .orElseGet(()->ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>("error",
+                        "user not found",null)));
+
+    }
+
+    @PutMapping("/reject/{id}")
+    @PreAuthorize("hasRole('ADMIN)")
+    @Transactional
+    public ResponseEntity<ApiResponse<Map<String,UUID>>> rejectUser(@PathVariable UUID id){
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setApproved(false);
+                    userRepository.save(user);
+
+                    Map<String,UUID> responseData=Map.of("userId",user.getId());
+                    ApiResponse<Map<String,UUID>> response=
+                            new ApiResponse<>("success","User rejected successfully",responseData);
                     return ResponseEntity.ok(response);
                 })
                 .orElseGet(()->ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>("error",

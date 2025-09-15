@@ -1,9 +1,9 @@
 package com.smarttraffic.traffic_management_system.dto;
 
 public class ApiResponse <T>{
-    private String status;
-    private String message;
-    private T data;
+    private final String status;
+    private final String message;
+    private final T data;
 
     public ApiResponse(String status, String message, T data) {
         this.status = status;
