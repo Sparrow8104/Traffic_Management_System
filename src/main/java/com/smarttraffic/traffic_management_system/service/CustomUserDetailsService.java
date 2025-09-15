@@ -1,5 +1,6 @@
 package com.smarttraffic.traffic_management_system.service;
 
+import com.smarttraffic.traffic_management_system.entity.User;
 import com.smarttraffic.traffic_management_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,10 +13,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
+
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        return userRepository.findByBadgeIdOrEmail(login,login)
+        User user= userRepository.findByBadgeIdOrEmail(login,login)
                 .orElseThrow(()->new UsernameNotFoundException("User not found"));
+
+        if(!user.isApproved())
+        {
+            throw new UsernameNotFoundException("Account not approved by admin yet");
+        }
+        return user;
     }
+
 
 }
