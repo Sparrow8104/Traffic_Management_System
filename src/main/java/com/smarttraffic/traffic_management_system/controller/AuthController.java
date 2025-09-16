@@ -58,7 +58,12 @@ public class AuthController {
      public ResponseEntity<?> forgotPassword(@RequestBody ForgetPasswordRequest request){
          String token=authService.generateResetToken(request.getEmailOrBadgeId());
 
-         return ResponseEntity.ok(Map.of("ResetToken",token));
+         ApiResponse<Void> response=new ApiResponse<>(
+                 "Success"
+                 ,"If this email is registered, we have sent a reset link"
+                 ,null
+         );
+         return ResponseEntity.ok(response);
      }
 
 
