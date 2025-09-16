@@ -1,10 +1,9 @@
 package com.smarttraffic.traffic_management_system.controller;
 
-import com.smarttraffic.traffic_management_system.dto.ApiResponse;
-import com.smarttraffic.traffic_management_system.dto.AuthRequestDto;
-import com.smarttraffic.traffic_management_system.dto.AuthResponseDto;
+import com.smarttraffic.traffic_management_system.dto.*;
 import com.smarttraffic.traffic_management_system.entity.User;
 import com.smarttraffic.traffic_management_system.security.JwtUtils;
+import com.smarttraffic.traffic_management_system.service.AuthService;
 import com.smarttraffic.traffic_management_system.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -30,6 +31,9 @@ public class AuthController {
 
     @Autowired
     AuthenticationManager authenticationManager;
+
+    @Autowired
+    AuthService authService;
 
     @PostMapping("/authenticate")
     public ResponseEntity<?> generateToken(@RequestBody AuthRequestDto authRequestDto){
@@ -49,5 +53,20 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
  }
+
+    @PostMapping("/forget_password")
+     public ResponseEntity<?> forgotPassword(@RequestBody ForgetPasswordRequest request){
+         String token=authService.generateResetToken(request.getEmailOrBadgeId());
+
+         return ResponseEntity.ok(Map.of("ResetToken",token));
+     }
+
+
+    @PostMapping("/reset_password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request){
+       authService.resetPassword(request.getToken(),request.getNewPassword());
+       return ResponseEntity.ok(Map.of("message","Password reset successful"));
+    }
+
 
 }
