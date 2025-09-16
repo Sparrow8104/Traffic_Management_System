@@ -1,4 +1,4 @@
-version: "3.9"  # Latest Compose file format
+version: "3.9"
 
 services:
   mysql_db:
@@ -6,12 +6,12 @@ services:
     container_name: mysql_db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootPassword   # Set your root password
-      MYSQL_DATABASE: traffic_db          # Database your app will use
-      MYSQL_USER: user                    # Optional user
-      MYSQL_PASSWORD: userPassword        # Optional user password
+      MYSQL_ROOT_PASSWORD: rootPassword
+      MYSQL_DATABASE: traffic_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userPassword
     ports:
-      - "3307:3306"                       # Host:Container
+      - "3307:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
