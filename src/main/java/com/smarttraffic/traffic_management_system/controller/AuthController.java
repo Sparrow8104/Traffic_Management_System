@@ -1,5 +1,6 @@
 package com.smarttraffic.traffic_management_system.controller;
 
+import com.smarttraffic.traffic_management_system.dto.ApiResponse;
 import com.smarttraffic.traffic_management_system.dto.AuthRequestDto;
 import com.smarttraffic.traffic_management_system.dto.AuthResponseDto;
 import com.smarttraffic.traffic_management_system.entity.User;
@@ -11,11 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
@@ -32,6 +36,11 @@ public class AuthController {
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDto.getLogin(),authRequestDto.getPassword()));
             User user=(User)customUserDetailsService.loadUserByUsername(authRequestDto.getLogin());
+            if(!user.isApproved())
+            {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse<>("error","Account not approved by admin yet",null));
+            }
             String token=jwtUtils.generateToken(user.getBadgeId());
 
             return ResponseEntity.ok(new AuthResponseDto(token));

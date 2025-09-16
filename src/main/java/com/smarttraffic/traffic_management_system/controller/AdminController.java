@@ -20,7 +20,7 @@ public class AdminController {
     private UserRepository userRepository;
 
     @PutMapping("/approve/{id}")
-    @PreAuthorize("hasRole('ADMIN)")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
      public ResponseEntity<ApiResponse<Map<String,UUID>>> approveUser(@PathVariable UUID id){
        return userRepository.findById(id)
@@ -39,7 +39,7 @@ public class AdminController {
     }
 
     @PutMapping("/reject/{id}")
-    @PreAuthorize("hasRole('ADMIN)")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public ResponseEntity<ApiResponse<Map<String,UUID>>> rejectUser(@PathVariable UUID id){
         return userRepository.findById(id)

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ public class RegistrationController {
     @Autowired
     private UserRepository userRepository;
 
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse<Map<String, UUID>>> register(@RequestBody RegisterRequestDto dto){
        if(userRepository.findByBadgeIdOrEmail(dto.getBadgeId(), dto.getEmail()).isPresent()){
            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(

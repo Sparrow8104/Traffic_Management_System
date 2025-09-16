@@ -19,10 +19,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user= userRepository.findByBadgeIdOrEmail(login,login)
                 .orElseThrow(()->new UsernameNotFoundException("User not found"));
 
-        if(!user.isApproved())
-        {
-            throw new UsernameNotFoundException("Account not approved by admin yet");
-        }
         return user;
     }
 
