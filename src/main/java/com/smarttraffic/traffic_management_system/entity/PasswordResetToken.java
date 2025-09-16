@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-public class PasswordResetEntity {
+public class PasswordResetToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
