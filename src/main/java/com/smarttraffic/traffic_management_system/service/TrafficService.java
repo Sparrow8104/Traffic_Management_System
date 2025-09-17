@@ -25,8 +25,8 @@ public class TrafficService {
         this.signalEventRepository = signalEventRepository;
     }
 
-    public void processSignalEvents(List<SignalEvent> events){
-        signalEventRepository.clear();;
+    public synchronized SignalEvent processSignalEvents(List<SignalEvent> events){
+        signalEventRepository.clear();
         events.forEach(signalEventRepository::save);
 
         for(SignalEvent e:events){
@@ -40,6 +40,8 @@ public class TrafficService {
 
         SignalEvent nextEvent=determineNextSignal(events);
         activateSignal(nextEvent);
+
+        return  nextEvent;
     }
 
     private SignalEvent determineNextSignal(List<SignalEvent> events){
