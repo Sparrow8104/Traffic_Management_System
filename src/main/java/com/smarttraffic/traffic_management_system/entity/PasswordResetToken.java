@@ -1,7 +1,5 @@
 package com.smarttraffic.traffic_management_system.entity;
 
-
-
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
