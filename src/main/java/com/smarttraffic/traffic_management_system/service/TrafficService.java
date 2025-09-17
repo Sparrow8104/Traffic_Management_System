@@ -99,7 +99,4 @@ public class TrafficService {
     public int getActiveLaneId(){return activeLaneId;}
     public int getGreenTimeRemaining(){return greenTimeRemaining;}
 
-
-
-
 }
